@@ -1,0 +1,81 @@
+---
+const { images } = Astro.props;
+---
+
+<div class="carousel-container">
+  <div class="carousel-track" id="carousel-track">
+    {images.map((img) => (
+      <div class="carousel-slide">
+        <img src={img.src} alt={img.alt} />
+      </div>
+    ))}
+  </div>
+
+  <button class="nav-btn prev" id="prev-btn">❮</button>
+  <button class="nav-btn next" id="next-btn">❯</button>
+</div>
+
+<style>
+  .carousel-container {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .carousel-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    /* Hide scrollbar */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+  }
+
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+  }
+
+  .carousel-slide img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  .prev { left: 10px; }
+  .next { right: 10px; }
+</style>
+
+<script>
+  // Client-side script to handle button clicks
+  const track = document.getElementById('carousel-track');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+
+  prevBtn.addEventListener('click', () => {
+    track.scrollBy({ left: -track.offsetWidth, behavior: 'smooth' });
+  });
+
+  nextBtn.addEventListener('click', () => {
+    track.scrollBy({ left: track.offsetWidth, behavior: 'smooth' });
+  });
+</script>

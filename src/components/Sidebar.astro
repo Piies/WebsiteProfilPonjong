@@ -1,0 +1,50 @@
+---
+const currentPath = Astro.url.pathname;
+
+const tabs = [
+  { name: "Ponjong", href: "/about" },
+  { name: "Kehidupan", href: "/about/agricultural" },
+  { name: "Sejarah", href: "/about/historical" },
+  { name: "Alam", href: "/about/nature" },
+  { name: "E-katalog", href: "/about/products" },
+];
+---
+
+<aside class="sidebar">
+  <nav>
+    <ul>
+      {tabs.map((tab) => (
+        <li>
+          <a href={tab.href} class={currentPath === tab.href ? "active" : ""}>
+            {tab.name}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    width: 200px; /* Fixed width for sidebar */
+    flex-shrink: 0; /* Prevents sidebar from shrinking */
+    background: var(--dry-sage);
+    padding: 1rem;
+    border-right: 1px solid var(--hunter-green);
+    min-height: 50vh; /* Optional: ensures it looks like a sidebar even if empty */
+  }
+
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { margin-bottom: 0.5rem; }
+
+  a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 4px;
+  }
+
+  a:hover { background: var(--palm-leaf); color: white;}
+  a.active { background: var(--dark-spruce); color: white; }
+</style>

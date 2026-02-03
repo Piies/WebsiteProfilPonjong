@@ -8,4 +8,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
 	site: 'https://example.com',
 	integrations: [mdx(), sitemap()],
+	image: {
+		domains: ['lh3.googleusercontent.com', 'drive.google.com'],
+	},
 });

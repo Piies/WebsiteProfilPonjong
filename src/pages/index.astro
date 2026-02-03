@@ -3,47 +3,312 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import Carousel from '../components/Carousel.astro';
+import bikingImg from "../assets/biking.jpeg";
+import { string } from 'astro:schema';
+import Papa from 'papaparse';
+
+const slides = [
+  { src: '/assets/carousel1.jpg', alt: 'Slide 1' },
+  { src: '/assets/carousel2.jpg', alt: 'Slide 2' },
+  { src: '/assets/carousel3.jpg', alt: 'Slide 3' },
+  { src: '/assets/carousel4.jpg', alt: 'Slide 4' },
+  { src: '/assets/carousel5.jpg', alt: 'Slide 5' },
+];
+
+// 1. Fetch the data at build time
+const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSueJxrlH6WKPNcw8xsvlvgWYnv-qUB6fXnViiZcCS4UfYU1HoI-VagXnv6Tu-5_07OmsTdO8MIsrGo/pub?gid=0&single=true&output=csv');
+const csvText = await response.text();
+
+// 2. Parse CSV to JSON
+// header: true uses the first row as keys
+const { data: tours } = Papa.parse(csvText, { header: true });
+
+const formatRupiah = (number: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(number);
+}
+
+const driveImager = (file_id: string) => {
+  return 'https://lh3.googleusercontent.com/u/0/d/'+file_id+'=w4000'
+}
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <Carousel images={slides} />
+      
+      {/* --- Intro Section --- */}
+      <div 
+        style="background-color: var(--hunter-green);
+        height: 600px;
+        padding: 0 5em;
+        display: flex;
+        flex: auto;
+        flex-direction: row;
+        align-Items: center;
+        justify-content: center;
+        gap: 2em;">
+        <img style="width: 45%; border-radius: 8px;" src={bikingImg.src} >
+        <div style="
+          display: flex;
+          flex: auto;
+          flex-direction: column;
+        ">
+          <h5 style="
+            font-family: 'Playfair Display Variable';
+            font-weight: 600;
+            color: var(--dry-sage);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+          ">
+          Jelajahi Ponjong: Jantung Karst Gunung Sewu
+          </h5>
+          <p style="
+            font-family: 'Playfair Display Variable';
+            font-weight: 450;
+            color: var(--dry-sage);
+            line-height: 1.6;
+          ">
+          Temukan Ponjong, permata Karst Gunung Sewu yang memadukan keasrian Jogja dengan jejak sejarah Majapahit. 
+          Rasakan harmoni di garis batas Jawa Tengah, di mana tanah perlindungan masa lampau kini menjadi rumah bagi kearifan hidup pedesaan. 
+          Mari saksikan langsung ritme pedesaan yang autentik dan kedamaian hidup yang menyatu dengan alam.
+          </p>
+        </div>
+      </div>
+
+      {/* --- Navigation Buttons --- */}
+      <div style="
+        background-color: var(--palm-leaf);
+        padding: 4em 6em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2em;
+      ">
+        <h3 style="color: var(--dry-sage); font-family: 'Playfair Display Variable'; margin-bottom: 1em;">Pesona Ponjong</h3>
+        
+        <div style="
+          display: flex;
+          justify-content: center;
+          gap: 3em;
+          width: 100%;
+          flex-wrap: wrap;
+        ">
+          <a href="/alam" class="routingButtons">
+            <img src="/assets/carousel2.jpg"/>
+            <h5 class="routingButtonLabels">Jelajahi Alam Ponjong</h5>
+            <p class="routingButtonDesc">Jelajahi keajaiban bentang alam Karst Gunung Sewu.</p>
+          </a>
+
+          <a href="/agriculture" class="routingButtons">
+            <img src="/assets/carousel1.jpg"/>
+            <h5 class="routingButtonLabels">Jejak Sejarah Ponjong</h5>
+            <p class="routingButtonDesc">Singkap jejak perlindungan dan warisan Majapahit di garis batas.</p>
+          </a>
+
+          <a href="/sejarah" class="routingButtons">
+            <img src="/assets/carousel3.jpg"/>
+            <h5 class="routingButtonLabels">Pesona Alam Ponjong</h5>
+            <p class="routingButtonDesc">Rasakan otentiknya hidup pedesaan kami.</p>
+          </a>
+        </div>
+      </div>
+
+      {/* --- Tour Section (Centered + Scrollable) --- */}
+      <div class="tour-section">
+        <h3 style="color: var(--deep-mocha); font-family: 'Playfair Display Variable'; text-align: center; margin-bottom: 1.5em;">
+          Paket Tour Pilihan
+        </h3>
+        
+        <div class="tour-scroll-container">
+          {tours.map((tour) => (
+            <div class="tour-card">
+              <div class="card-image" style={`background-image: url(${driveImager(tour['Drive id gambar utama'])})`}></div>
+              <div class="card-content">
+                <h5 class="card-title">{tour['Judul']}</h5>
+                <p class="card-desc">{tour['Deskripsi Singkat']}</p>
+                <div class="card-details">
+                  <span class="card-price">{formatRupiah(tour['Harga'])}</span>
+                  <span class="card-distance">{tour['Jarak Sepeda (km)']}km</span>
+                </div>
+                <button class="card-button">Lihat Detail</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div> 
+        {/* Berita Section */}
+      </div>
+    </main>
+    <Footer />
+  </body>
 </html>
+
+<style>
+  /* --- Routing Buttons Styles --- */
+  .routingButtons{
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
+    padding: 1.5em;
+    background-color: var(--dry-sage);
+    border: 1px solid rgba(255,255,255,0.2);
+    text-decoration: none;
+    text-align: center;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+  }
+  .routingButtons:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  }
+  .routingButtons img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .routingButtonLabels{
+    color: var(--deep-mocha);
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  .routingButtonDesc{
+    color: var(--dark-spruce);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  /* --- Tour Section Styles --- */
+  .tour-section {
+    padding: 4em 0;
+    background-color: #fdfdfd; 
+    overflow: hidden; 
+  }
+
+  /* UPDATED: Logic to center items when few, but scroll when many */
+  .tour-scroll-container {
+    display: flex;
+    gap: 2em;
+    overflow-x: auto;
+    
+    /* These 3 lines fix the centering issue: */
+    width: fit-content;    /* 1. Only take up as much width as the cards need */
+    max-width: 100%;       /* 2. Unless that width is wider than the screen */
+    margin: 0 auto;        /* 3. Center the container itself */
+
+    padding: 1em 2em;      /* Reduced side padding to fit centering better */
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; 
+  }
+  
+  .tour-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tour-card {
+    flex: 0 0 300px;
+    scroll-snap-align: center;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 480px;
+  }
+
+  .tour-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .card-image {
+    height: 180px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .card-content {
+    padding: 1.5em;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display Variable', serif;
+    color: var(--hunter-green);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.5em 0;
+  }
+
+  .card-desc {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+    margin-bottom: auto; 
+    display: -webkit-box;
+    -webkit-line-clamp: 4; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+  }
+
+  .card-price {
+    font-weight: bold;
+    color: var(--deep-mocha);
+  }
+
+  .card-distance {
+    color: #888;
+    font-size: 0.85rem;
+  }
+
+  .card-button {
+    margin-top: 1em;
+    padding: 0.8em;
+    background-color: var(--hunter-green);
+    color: var(--dry-sage);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    width: 100%;
+  }
+
+  .card-button:hover {
+    background-color: var(--deep-mocha);
+    color: white;
+  }
+</style>	
