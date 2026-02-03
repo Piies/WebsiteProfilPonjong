@@ -9,11 +9,11 @@ import { string } from 'astro:schema';
 import Papa from 'papaparse';
 
 const slides = [
-  { src: '/assets/carousel1.jpg', alt: 'Slide 1' },
-  { src: '/assets/carousel2.jpg', alt: 'Slide 2' },
-  { src: '/assets/carousel3.jpg', alt: 'Slide 3' },
-  { src: '/assets/carousel4.jpg', alt: 'Slide 4' },
-  { src: '/assets/carousel5.jpg', alt: 'Slide 5' },
+  { src: '/assets/carousel1.jpg', alt: 'Slide 1', tagline: 'Pulang ke Ponjong: Di Mana Setiap Sudut Adalah Cerita.', desc: 'Kembali dan merasakan sejenak, ketenangan yang memulihkan sejak leluhur' },
+  { src: '/assets/carousel2.jpg', alt: 'Slide 2', tagline: 'Menelusuri Jejak Karst, Menemukan Kedamaian di Jantung Alam Ponjong.', desc: 'Jelajahi dan telusuri jejak karst Gunung Sewu, buaian ibunda tanah air' },
+  { src: '/assets/carousel3.jpg', alt: 'Slide 3', tagline: 'Ponjong: Tanah Kedamaian di Balik Karst Abadi', desc: 'Menelusuri jejak pelarian ksatria Majapahit hingga saksi bisu perjuangan kemerdekaan.' },
+  { src: '/assets/carousel4.jpg', alt: 'Slide 4', tagline: 'Menelusuri Jejak Karst, Menemukan Kedamaian di Jantung Alam Ponjong.', desc: 'Jelajahi dan telusuri jejak karst Gunung Sewu, buaian ibunda tanah air'  },
+  { src: '/assets/carousel5.jpg', alt: 'Slide 5', tagline: 'Pulang ke Ponjong: Di Mana Setiap Sudut Adalah Cerita.', desc: 'Kembali dan merasakan sejenak, ketenangan yang memulihkan sejak leluhur'  },
 ];
 
 // 1. Fetch the data at build time
@@ -33,7 +33,7 @@ const formatRupiah = (number: number) => {
 }
 
 const driveImager = (file_id: string) => {
-  return 'https://lh3.googleusercontent.com/u/0/d/'+file_id+'=w4000'
+  return 'https://lh3.googleusercontent.com/u/0/d/'+file_id+'=w2000'
 }
 ---
 
