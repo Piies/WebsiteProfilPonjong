@@ -31,12 +31,9 @@ const { images } = Astro.props;
 
   .carousel-track {
     display: flex;
-    overflow-x: auto;
+    overflow-x: hidden; /* Changed from auto */
     scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    /* Hide scrollbar */
-    scrollbar-width: none; 
-    -ms-overflow-style: none;
+    /* Remove scroll-behavior: smooth from CSS; we'll handle it in JS */
   }
 
   .carousel-slide {
@@ -110,16 +107,53 @@ const { images } = Astro.props;
 </style>
 
 <script>
-  // Client-side script to handle button clicks
   const track = document.getElementById('carousel-track');
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
+  const slides = Array.from(track.children);
+  
+  // 1. Clone slides
+  const firstClone = slides[0].cloneNode(true);
+  const lastClone = slides[slides.length - 1].cloneNode(true);
 
-  prevBtn.addEventListener('click', () => {
-    track.scrollBy({ left: -track.offsetWidth, behavior: 'smooth' });
-  });
+  // 2. Add clones to DOM
+  track.appendChild(firstClone);
+  track.insertBefore(lastClone, slides[0]);
+
+  // 3. Initial Position (Start at the real first slide, not the clone)
+  let currentIndex = 1;
+  track.scrollLeft = track.offsetWidth;
+
+  const updateCarousel = (instant = false) => {
+    track.scrollTo({
+      left: currentIndex * track.offsetWidth,
+      behavior: instant ? 'auto' : 'smooth'
+    });
+  };
 
   nextBtn.addEventListener('click', () => {
-    track.scrollBy({ left: track.offsetWidth, behavior: 'smooth' });
+    if (currentIndex >= slides.length + 1) return; 
+    currentIndex++;
+    updateCarousel();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentIndex <= 0) return;
+    currentIndex--;
+    updateCarousel();
+  });
+
+  // 4. The "Teleport" - Check after scroll animation finishes
+  track.addEventListener('scrollend', () => {
+    // If we are on the last clone (the fake first slide)
+    if (currentIndex === slides.length + 1) {
+      currentIndex = 1;
+      updateCarousel(true); // Jump instantly
+    }
+    // If we are on the first clone (the fake last slide)
+    if (currentIndex === 0) {
+      currentIndex = slides.length;
+      updateCarousel(true); // Jump instantly
+    }
   });
 </script>

@@ -2,7 +2,7 @@
 import { SITE_TITLE } from '../consts';
 import { Image } from 'astro:assets';
 import HeaderLink from './HeaderLink.astro';
-import whatsappIcon from '../assets/whatsapp-svgrepo-com.svg';
+import tiktokIcon from '../assets/tiktok-svgrepo-com.svg';
 import instaIcon from '../assets/instagram-logo-facebook-2-svgrepo-com.svg';
 ---
 
@@ -16,13 +16,17 @@ import instaIcon from '../assets/instagram-logo-facebook-2-svgrepo-com.svg';
 			<!-- <HeaderLink href="/blog">Blog</HeaderLink> -->
 		</div>
 		<div class="social-links">
-			<a href="https://twitter.com/astrodotbuild" target="_blank">
-				<span class="sr-only">Follow Astro on Twitter</span>
+			<a href="https://www.instagram.com/pemkal.ponjong/" target="_blank">
+				<span class="sr-only">Follow pemkal Ponjong on Instagram</span>
 				<Image src={instaIcon} alt="Instagram" width={32} height={32}/>
 			</a>
-			<a href="https://twitter.com/astrodotbuild" target="_blank">
-				<span class="sr-only">Follow Astro on Twitter</span>
-				<Image src={whatsappIcon} alt="whatsapp" width={32} height={32}/>
+			<a href="https://www.instagram.com/deswitaponjong/" target="_blank">
+				<span class="sr-only">Follow Deswita Ponjong on Instagram</span>
+				<Image src={instaIcon} alt="Instagram" width={32} height={32}/>
+			</a>
+			<a href="https://www.tiktok.com/@deswitaponjong" target="_blank">
+				<span class="sr-only">Follow Deswita Ponjong on Tiktok</span>
+				<Image src={tiktokIcon} alt="Tiktok" width={32} height={32}/>
 			</a>
 		</div>
 	</nav>

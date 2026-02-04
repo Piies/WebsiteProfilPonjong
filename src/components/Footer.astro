@@ -3,16 +3,25 @@ const today = new Date();
 import { Image } from 'astro:assets';
 import whatsappIcon from '../assets/whatsapp-svgrepo-com.svg';
 import instaIcon from '../assets/instagram-logo-facebook-2-svgrepo-com.svg';
+import tiktokIcon from '../assets/tiktok-svgrepo-com.svg';
 import jemarIcon from '../assets/jemari.png';
 ---
 
 <footer>
 	<div class="social-links">
-		<a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
-			<span class="sr-only">Instagram</span>
+		<a href="https://www.instagram.com/pemkal.ponjong/" target="_blank">
+			<span class="sr-only">Follow pemkal Ponjong on Instagram</span>
 			<Image src={instaIcon} alt="Instagram" width={32} height={32}/>
 		</a>
-		<a href="https://wa.me/" target="_blank" rel="noopener noreferrer">
+		<a href="https://www.instagram.com/deswitaponjong/" target="_blank">
+			<span class="sr-only">Follow Deswita Ponjong on Instagram</span>
+			<Image src={instaIcon} alt="Instagram" width={32} height={32}/>
+		</a>
+		<a href="https://www.tiktok.com/@deswitaponjong" target="_blank">
+			<span class="sr-only">Follow Deswita Ponjong on Tiktok</span>
+			<Image src={tiktokIcon} alt="Tiktok" width={32} height={32}/>
+		</a>
+		<a href="https://wa.me/6287788877925" target="_blank" rel="noopener noreferrer">
 			<span class="sr-only">WhatsApp</span>
 			<Image src={whatsappIcon} alt="WhatsApp" width={32} height={32}/>
 		</a>
