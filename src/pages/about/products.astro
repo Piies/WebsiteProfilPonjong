@@ -4,15 +4,19 @@ import AboutLayout from '../../layouts/AboutLayout.astro';
 
 import ponjongMap from '../../assets/petaRural-cropped.svg';
 
-// Fill this array with your locations. x/y are percentages (0–100) for pin position on the map.
-const locations = [
-  { id: '1', name: 'Rumah Produksi Jamu Kelompok Toga Ajek Waras', x: 50, y: 90, description: 'Dari pihak UPT puskesmas Ponjong menyatakan bahwa kunyit sangat bermanfaat dan dapat meningkatkan imun bagi tubuh. Maka dari itu dibuatlah jamu dari olahan kunyit dan TOGA (taman toga berada di sebelah kandang komunal) oleh kelompok wanita tani (KWT). Dari KWT itulah dibentuk kelompok jamu ajeg waras. Hingga saat ini Jamu Ajeg Waras dapat berjalan dengan struktur usaha berbasis komunitas yang memberdayakan masyarakat terutama di sekitar dusun Jaten. Kerjasama dengan Puskesmas juga memberikan Jamu Ajek Waras kualitas alami yang disandingkan dengan penjagaan kualitas modern. ' },
-  { id: '2', name: 'Pabrik Tempe Pak Rudy', x: 44, y: 43, description: 'Pendatang dari Pekalongan dan merupakan Pelopor pertama Pabrik Tempe terbesar di Area Ponjong, Karangmojo, Semanu. (saat itu) Sekarang memiliki beberapa bos yang masih satu keluarga. Tiap-tiap bos menjalankan sebagian area pabrik tempe secara mandiri. Tempe yang diproduksi berasal dari kacang kedelai impor dari Amerika Serikat. Limbah tempe seperti kulit kacang kedelai dan air rebus kacang kedelai digunakan sebagai bahan pakan hewan ternak.' },
-  { id: '3', name: 'Pasar pagi Ponjong', x: 38, y: 33, description: 'Pasar Ponjong merupakan bangunan bersejarah yang dibangun pada masa kolonial Belanda. Hingga saat ini, keaslian struktur utamanya tetap terjaga dengan sangat baik; meskipun telah dilakukan berbagai upaya renovasi, pembangunan baru dilakukan di atas atau di sekitar bangunan asli guna memastikan peninggalan sejarah tersebut tetap utuh dan terlindungi. Sebagai pusat ekonomi lokal yang kental dengan tradisi, los ini beroperasi secara aktif setiap hari Legi dan Pon dalam penanggalan Jawa.' },
-  { id: '4', name: 'Sego Berkat Yu Kasmi', x: 2, y: 50, description: 'Sego Berkat Yu Kasmi adalah destinasi kuliner lokal yang mulai memanjakan lidah masyarakat sejak dibuka pada tahun 2020. Spesialisasi utamanya adalah nasi berkat, hidangan tradisional penuh makna yang disajikan dengan cita rasa autentik.' },
-  { id: '5', name: 'Angkringan Lek Carikan Dul Sember', x: 48, y: 60, description: 'Angkringan Lek Carikan adalah angkringan yang menjadi legendaris untuk kalangan komunitas bersepeda di sekitar daerah Ponjong.' },
-  { id: '6', name: 'Batik Gedhegpring', x: 31, y: 38, description: 'Batik Gedhegpring merupakan unit usaha kreatif yang berfokus pada produksi dan penjualan batik khas dengan teknik batik ciprat. Melalui metode pembuatan yang unik ini, mereka menghasilkan motif-motif artistik yang modern namun tetap memiliki nilai seni tradisional yang kuat.' },
-];
+import Papa from 'papaparse';
+// 1. Fetch the data at build time
+const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSueJxrlH6WKPNcw8xsvlvgWYnv-qUB6fXnViiZcCS4UfYU1HoI-VagXnv6Tu-5_07OmsTdO8MIsrGo/pub?gid=1046898832&single=true&output=csv');
+const csvText = await response.text();
+
+// 2. Parse CSV to JSON
+// header: true uses the first row as keys
+const { data: allLocations } = Papa.parse(csvText, { header: true });
+const locations = allLocations.filter((loc) => loc.kategori === 'toko');
+
+const driveImager = (file_id: string) => {
+  return 'https://lh3.googleusercontent.com/u/0/d/'+file_id+'=w2000'
+}
 ---
 
 <AboutLayout title="Pesona Kehidupan Ponjong">
@@ -29,14 +33,14 @@ const locations = [
           <img style="object-fit: fill;" src={ponjongMap.src}/>
         </div>
 
-        {locations.map((loc) => (
+        {locations.map((loc, index) => (
           <button
             type="button"
             class="map-pin"
-            data-location-id={loc.id}
-            style={`left: ${loc.x}%; top: ${loc.y}%;`}
-            aria-label={`Lokasi: ${loc.name}`}
-            title={loc.name}
+            data-location-id={index} 
+            style={`left: ${loc.map_x}%; top: ${loc.map_y}%;`}
+            aria-label={`Lokasi: ${loc.Nama}`}
+            title={loc.Nama}
           >
             <span class="map-pin-dot"></span>
           </button>
@@ -64,39 +68,50 @@ const locations = [
       const titleEl = document.getElementById('detail-title');
       const descEl = document.getElementById('detail-desc');
       const closeBtn = document.getElementById('detail-close');
-
+  
       const pins = document.querySelectorAll('.map-pin');
       const data = Array.isArray(locations) ? locations : [];
-
-      function showDetail(id) {
-        const loc = data.find((l) => l.id === id);
+  
+      function showDetail(indexStr) {
+        // CONVERT STRING ID TO NUMBER
+        const index = parseInt(indexStr, 10);
+        
+        // ACCESS DIRECTLY BY INDEX
+        const loc = data[index]; 
+  
         if (!loc || !titleEl || !descEl || !placeholder || !content) return;
+        
         placeholder.classList.add('hidden');
         content.classList.remove('hidden');
-        titleEl.textContent = loc.name;
-        descEl.textContent = loc.description;
+        titleEl.textContent = loc.Nama;
+        descEl.textContent = loc.Deskripsi; // Ensure your CSV has a 'description' column
+        
         pins.forEach((pin) => {
-          pin.classList.toggle('is-active', pin.getAttribute('data-location-id') === id);
+          // Compare the attribute string vs the current index string
+          pin.classList.toggle('is-active', pin.getAttribute('data-location-id') === indexStr);
         });
       }
-
+  
       function hideDetail() {
         placeholder?.classList.remove('hidden');
         content?.classList.add('hidden');
         pins.forEach((p) => p.classList.remove('is-active'));
       }
-
+  
       pins.forEach((pin) => {
         pin.addEventListener('click', () => {
-          const id = pin.getAttribute('data-location-id');
-          if (!id) return;
-          const loc = data.find((l) => l.id === id);
+          // This will now get "0", "1", etc.
+          const id = pin.getAttribute('data-location-id'); 
+          if (id === null) return;
+          
+          // Helper to check if currently active
           const isActive = pin.classList.contains('is-active');
-          if (loc && !isActive) showDetail(id);
-          else if (isActive) hideDetail();
+  
+          if (!isActive) showDetail(id);
+          else hideDetail();
         });
       });
-
+  
       closeBtn?.addEventListener('click', hideDetail);
     })();
   </script>
