@@ -1,27 +1,276 @@
 ---
 import AboutLayout from '../../layouts/AboutLayout.astro';
+
+
+import ponjongMap from '../../assets/petaRural-cropped.svg';
+
+// Fill this array with your locations. x/y are percentages (0–100) for pin position on the map.
+const locations = [
+  { id: '1', name: 'Rumah Produksi Jamu Kelompok Toga Ajek Waras', x: 50, y: 90, description: 'Dari pihak UPT puskesmas Ponjong menyatakan bahwa kunyit sangat bermanfaat dan dapat meningkatkan imun bagi tubuh. Maka dari itu dibuatlah jamu dari olahan kunyit dan TOGA (taman toga berada di sebelah kandang komunal) oleh kelompok wanita tani (KWT). Dari KWT itulah dibentuk kelompok jamu ajeg waras. Hingga saat ini Jamu Ajeg Waras dapat berjalan dengan struktur usaha berbasis komunitas yang memberdayakan masyarakat terutama di sekitar dusun Jaten. Kerjasama dengan Puskesmas juga memberikan Jamu Ajek Waras kualitas alami yang disandingkan dengan penjagaan kualitas modern. ' },
+  { id: '2', name: 'Pabrik Tempe Pak Rudy', x: 44, y: 43, description: 'Pendatang dari Pekalongan dan merupakan Pelopor pertama Pabrik Tempe terbesar di Area Ponjong, Karangmojo, Semanu. (saat itu) Sekarang memiliki beberapa bos yang masih satu keluarga. Tiap-tiap bos menjalankan sebagian area pabrik tempe secara mandiri. Tempe yang diproduksi berasal dari kacang kedelai impor dari Amerika Serikat. Limbah tempe seperti kulit kacang kedelai dan air rebus kacang kedelai digunakan sebagai bahan pakan hewan ternak.' },
+  { id: '3', name: 'Pasar pagi Ponjong', x: 38, y: 33, description: 'Pasar Ponjong merupakan bangunan bersejarah yang dibangun pada masa kolonial Belanda. Hingga saat ini, keaslian struktur utamanya tetap terjaga dengan sangat baik; meskipun telah dilakukan berbagai upaya renovasi, pembangunan baru dilakukan di atas atau di sekitar bangunan asli guna memastikan peninggalan sejarah tersebut tetap utuh dan terlindungi. Sebagai pusat ekonomi lokal yang kental dengan tradisi, los ini beroperasi secara aktif setiap hari Legi dan Pon dalam penanggalan Jawa.' },
+  { id: '4', name: 'Sego Berkat Yu Kasmi', x: 2, y: 50, description: 'Sego Berkat Yu Kasmi adalah destinasi kuliner lokal yang mulai memanjakan lidah masyarakat sejak dibuka pada tahun 2020. Spesialisasi utamanya adalah nasi berkat, hidangan tradisional penuh makna yang disajikan dengan cita rasa autentik.' },
+  { id: '5', name: 'Angkringan Lek Carikan Dul Sember', x: 48, y: 60, description: 'Angkringan Lek Carikan adalah angkringan yang menjadi legendaris untuk kalangan komunitas bersepeda di sekitar daerah Ponjong.' },
+  { id: '6', name: 'Batik Gedhegpring', x: 31, y: 38, description: 'Batik Gedhegpring merupakan unit usaha kreatif yang berfokus pada produksi dan penjualan batik khas dengan teknik batik ciprat. Melalui metode pembuatan yang unik ini, mereka menghasilkan motif-motif artistik yang modern namun tetap memiliki nilai seni tradisional yang kuat.' },
+];
 ---
 
-<AboutLayout title="General Contents">
-  <h1>General Contents</h1>
-  <p>Welcome to the dashboard. Select a destination type from the sidebar.</p>
-  
-  <div class="card-grid">
-    <div class="card">Latest Updates</div>
-    <div class="card">Stats</div>
-  </div>
+<AboutLayout title="Pesona Kehidupan Ponjong">
+  <section class="nature-page">
+    <header class="nature-header">
+      <h1>Pesona Kehidupan Ponjong</h1>
+      <p>Klik pin di peta untuk menjelajahi destinasi alam di kawasan Ponjong.</p>
+    </header>
+
+    <div class="map-layout">
+      <div class="map-container" id="nature-map">
+        <!-- Abstract map surface (replace with real map image if you have one) -->
+        <div class="map-surface" aria-hidden="true">
+          <img style="object-fit: fill;" src={ponjongMap.src}/>
+        </div>
+
+        {locations.map((loc) => (
+          <button
+            type="button"
+            class="map-pin"
+            data-location-id={loc.id}
+            style={`left: ${loc.x}%; top: ${loc.y}%;`}
+            aria-label={`Lokasi: ${loc.name}`}
+            title={loc.name}
+          >
+            <span class="map-pin-dot"></span>
+          </button>
+        ))}
+      </div>
+
+      <aside class="map-detail-panel" id="detail-panel">
+        <div class="map-detail-placeholder" id="detail-placeholder">
+          <span class="map-detail-hint">Pilih sebuah lokasi di peta</span>
+        </div>
+        <div class="map-detail-content hidden" id="detail-content">
+          <button type="button" class="map-detail-close" id="detail-close" aria-label="Tutup">×</button>
+          <h2 class="map-detail-title" id="detail-title"></h2>
+          <p class="map-detail-desc" id="detail-desc"></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <script lang="ts" define:vars={{ locations }}>
+    (function () {
+      const panel = document.getElementById('detail-panel');
+      const placeholder = document.getElementById('detail-placeholder');
+      const content = document.getElementById('detail-content');
+      const titleEl = document.getElementById('detail-title');
+      const descEl = document.getElementById('detail-desc');
+      const closeBtn = document.getElementById('detail-close');
+
+      const pins = document.querySelectorAll('.map-pin');
+      const data = Array.isArray(locations) ? locations : [];
+
+      function showDetail(id) {
+        const loc = data.find((l) => l.id === id);
+        if (!loc || !titleEl || !descEl || !placeholder || !content) return;
+        placeholder.classList.add('hidden');
+        content.classList.remove('hidden');
+        titleEl.textContent = loc.name;
+        descEl.textContent = loc.description;
+        pins.forEach((pin) => {
+          pin.classList.toggle('is-active', pin.getAttribute('data-location-id') === id);
+        });
+      }
+
+      function hideDetail() {
+        placeholder?.classList.remove('hidden');
+        content?.classList.add('hidden');
+        pins.forEach((p) => p.classList.remove('is-active'));
+      }
+
+      pins.forEach((pin) => {
+        pin.addEventListener('click', () => {
+          const id = pin.getAttribute('data-location-id');
+          if (!id) return;
+          const loc = data.find((l) => l.id === id);
+          const isActive = pin.classList.contains('is-active');
+          if (loc && !isActive) showDetail(id);
+          else if (isActive) hideDetail();
+        });
+      });
+
+      closeBtn?.addEventListener('click', hideDetail);
+    })();
+  </script>
 </AboutLayout>
 
 <style>
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 2rem;
+  .nature-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
-  .card {
-    border: 1px solid;
-    padding: 1.5rem;
-    border-radius: 8px;
+
+  .nature-header h1 {
+    font-family: 'Playfair Display Variable', serif;
+    color: var(--dark-spruce);
+    margin-bottom: 0.25rem;
+  }
+
+  .nature-header p {
+    color: var(--dark-spruce);
+    margin: 0;
+  }
+
+  .map-layout {
+    display: grid;
+    grid-template-columns: 1fr 700px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .map-container {
+    position: relative;
+    height: auto;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .map-surface {
+    position: relative;
+    width: 100%;
+    pointer-events: none;
+    height: auto;
+  }
+
+  .map-surface img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: fill;
+  }
+
+  .map-pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+
+  .map-pin:hover,
+  .map-pin.is-active {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  .map-pin-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--dry-sage);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    border: 3px solid #fff;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+
+  .map-pin:hover .map-pin-dot,
+  .map-pin.is-active .map-pin-dot {
+    background: #fff;
+    box-shadow: 0 0 0 4px var(--hunter-green);
+  }
+
+  .map-detail-panel {
+    position: sticky;
+    top: 1rem;
+    min-height: 200px;
+    height: 80%;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 1.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .map-detail-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    color: var(--gray);
+  }
+
+  .map-detail-hint {
+    font-size: 0.95rem;
+    color: #888;
+  }
+
+  .map-detail-content {
+    position: relative;
+  }
+
+  .map-detail-content.hidden {
+    display: none !important;
+  }
+
+  .map-detail-close {
+    position: absolute;
+    top: -0.25rem;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: #eee;
+    color: #555;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .map-detail-close:hover {
+    background: var(--hunter-green);
+    color: var(--dry-sage);
+  }
+
+  .map-detail-title {
+    font-family: 'Playfair Display Variable', serif;
+    color: var(--hunter-green);
+    font-size: 1.35rem;
+    margin: 0 0 0.75rem 0;
+    padding-right: 2rem;
+  }
+
+  .map-detail-desc {
+    color: #444;
+    line-height: 1.55;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  @media (max-width: 900px) {
+    .map-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .map-detail-panel {
+      position: static;
+    }
   }
 </style>

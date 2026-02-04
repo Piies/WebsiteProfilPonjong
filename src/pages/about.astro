@@ -1,13 +1,70 @@
 ---
 import AboutLayout from '../layouts/AboutLayout.astro';
+
+import ponjongMap from '../assets/Poin Destinasi Wisata.svg'
 ---
 
 <AboutLayout title="Tentang Desa Kami">
-  <h1>Tentang Desa Kami</h1>
-  <p>Selamat Datang di Ponjong: Hidden Gem di Gunung Kidul</p>
-  
+  <section>
+    <header>
+      <h1>Tentang Desa Kami</h1>
+      <p>Selamat Datang di Ponjong: Hidden Gem di Gunung Kidul</p>
+      <p>Terletak di jantung Gunung Kidul, Desa Ponjong menawarkan wajah yang berbeda dari lanskap tandus yang sering diasosiasikan dengan wilayah ini. Diberkahi dengan sumber air yang melimpah dan tanah yang subur, desa kami adalah perpaduan harmonis antara hamparan sawah hijau, situs sejarah yang agung, dan masyarakat yang teguh menjaga tradisi di tengah arus modernisasi. Dari gema sejarah Perjanjian Giyanti hingga alunan gamelan desa, Ponjong bukan sekadar destinasi; ia adalah cerita kehidupan yang menanti untuk Anda jelajahi.</p>
+    </header>
+    <div style="display:flex; flex-direction: row;">
+      <div class="destinasiWisata">
+        <h2>Destinasi wisata di ponjong</h2>
+        <img style="padding: 2em; width: 80%;" src={ponjongMap.src} />
+      </div>
+      <div class="kerawananJalan">
+        <h2>Kerawanan jalan di ponjong</h2>
+        <img style="padding: 2em; width: 80%;" src={ponjongMap.src} />
+      </div>
+    </div>
+    <div class="links" >
+      <h4>Tautan Ponjong lainnya</h4>
+      <p>website pemerintah:</p>
+      <a>https://desaponjong.gunungkidulkab.go.id/first</a>
+    </div>
+  </section>
 </AboutLayout>
 
 <style>
-  
+  header {
+    font-family: 'Playfair Display Variable';
+    background-color: var(--dark-spruce);
+    padding: 2em;
+  }
+
+  h1, h2 {
+    color: var(--dry-sage);
+  }
+
+  p {
+    color: var(--ocean-pearl);
+  }
+
+  .destinasiWisata {
+    background-color: var(--hunter-green);
+    font-family: 'Playfair Display Variable';
+    padding: 2em;
+    align-content: center;
+  }
+  .kerawananJalan {
+    background-color: var(--hunter-green);
+    font-family: 'Playfair Display Variable';
+    padding: 2em;
+    align-content: center;
+  }
+
+  .links {
+    background-color: var(--dark-spruce);
+    padding: 2em;
+  }
+  .links h4 {
+    color: var(--dry-sage);
+  }
+  .links a{
+    color: var(--ocean-pearl);
+  }
 </style>
